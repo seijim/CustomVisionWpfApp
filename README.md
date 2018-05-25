@@ -1,5 +1,6 @@
 # CustomVisionWpfApp
 Azure Cognitive Services - Custom Vison Service (https://customvision.ai/) の Object Detection 機能 (2018.05.25 時点で Limited Preview) を使った以下のような WPF アプリケーションです。
+
 <img src="images/ap01.png" />
 
 Custom Vision Services で、オブジェクトを学習後、PERFORMANCE タブの Prediction URL をクリックして、そこに表示される情報を使い、MainWindow.xaml.cs の以下変数の値「xxxxx～xxxxx」を修正してください。
