@@ -1,0 +1,20 @@
+﻿<Window x:Class="CustomVisionObjDetectWpfApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="700" Width="960">
+    <Grid x:Name="BackPanel">
+        <Image x:Name="VisionPhoto" Stretch="Uniform" Margin="0,0,0,35" MouseMove="VisionPhoto_MouseMove" />
+        <DockPanel DockPanel.Dock="Bottom">
+            <Label Name="Label1" Content="信頼確率 >=" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Left" />
+            <TextBox Name="TextBoxProbability" Text="0.5" TextAlignment="Left" FontSize="18" Width="100" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Left" />
+            <Button x:Name="BrowseButton" Width="150" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Left"
+                Content="オブジェクト自動検出" FontWeight="Bold" Foreground="White" Background="Blue"
+                Click="BrowseButton_Click" />
+            <StatusBar VerticalAlignment="Bottom" Height="30">
+                <StatusBarItem>
+                    <TextBlock Name="VisionDescriptionStatusBar" />
+                </StatusBarItem>
+            </StatusBar>
+        </DockPanel>
+    </Grid>
+</Window>
