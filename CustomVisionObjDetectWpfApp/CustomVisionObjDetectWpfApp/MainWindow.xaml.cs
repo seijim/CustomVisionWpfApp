@@ -27,12 +27,12 @@ namespace CustomVisionObjDetectWpfApp
     public partial class MainWindow : Window
     {
         static readonly string predictionKeyName = "Prediction-Key";
-        static readonly string predictionKeyValue = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-        static readonly string iterationId = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
-        static readonly string predictionUri =
-             "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/image?"
-            + $"iterationId={iterationId}";
+        static string predictionKeyValue;
+        static string predictionEndpoint;
+        static string iterationId;
+        static string predictionUri;
 
+        SettingWindow settingWindow;
         double resizeFactor;
         JArray visionPredictions;
         string[] visionDescriptions;
@@ -58,8 +58,8 @@ namespace CustomVisionObjDetectWpfApp
             Brushes.LightCoral,
             Brushes.LightBlue
         };
-        int indexBrushes = 0;
-        Dictionary<string, Brush> dicTagBrush = new Dictionary<string, Brush>();
+        int indexBrushes;
+        Dictionary<string, Brush> dicTagBrush;
 
         public MainWindow()
         {
@@ -68,6 +68,20 @@ namespace CustomVisionObjDetectWpfApp
 
         private async void BrowseButton_Click(object sender, RoutedEventArgs e)
         {
+            if ((string)Properties.Settings.Default["ApiEndpoint"] == string.Empty)
+            {
+                settingWindow = new SettingWindow();
+                settingWindow.ShowDialog();
+            }
+            predictionEndpoint = (string)Properties.Settings.Default["ApiEndpoint"];
+            iterationId = (string)Properties.Settings.Default["ApiIterationId"];
+            predictionUri = predictionEndpoint + $"?iterationId={iterationId}";
+            predictionKeyValue = (string)Properties.Settings.Default["ApiPredictionKey"];
+            TextBoxProbability.Text = (string)Properties.Settings.Default["Probability"];
+
+            indexBrushes = 0;
+            dicTagBrush = new Dictionary<string, Brush>();
+
             // Get the image file to scan from the user.
             var openDlg = new Microsoft.Win32.OpenFileDialog();
 
@@ -94,12 +108,12 @@ namespace CustomVisionObjDetectWpfApp
             VisionPhoto.Source = bitmapSource;
 
             // Detect any faces in the image.
-            Title = "Detecting...";
+            Title = "オブジェクトの検出中.....";
             visionPredictions = await UploadAndDetectObjects(filePath);
             if (visionPredictions == null)
                 return;
 
-            Title = String.Format("Detection Finished. {0} object(s) detected", visionPredictions.Count);
+            Title = String.Format("** オブジェクトが検出されました ** {0} object(s) detected", visionPredictions.Count);
 
             if (visionPredictions.Count > 0)
             {
@@ -186,7 +200,6 @@ namespace CustomVisionObjDetectWpfApp
                         // Store the object description.
                         visionDescriptions[i] = string.Empty;
                     }
-
                 }
 
                 drawingContext.Close();
@@ -203,7 +216,7 @@ namespace CustomVisionObjDetectWpfApp
                 VisionPhoto.Source = visionWithRectBitmap;
 
                 // Set the status bar text.
-                VisionDescriptionStatusBar.Text = "Place the mouse pointer over an object to see the object description.";
+                VisionDescriptionStatusBar.Text = " ** マウスポインターをオブジェクト上にポイントすると、詳細が表示されます";
             }
         }
 
@@ -226,17 +239,16 @@ namespace CustomVisionObjDetectWpfApp
                 DateTime dt1 = DateTime.Now;
 
                 // Predict by using object detection model.
-                var visionPredictResult = client.PostAsync(predictionUri, content);
-                visionPredictResult.Wait();
+                var visionPredictResult = await client.PostAsync(predictionUri, content);
 
                 DateTime dt2 = DateTime.Now;
                 ts = dt2 - dt1;
                 stringTs = $"** TAT => {ts.Hours}:{ts.Minutes}:{ts.Seconds}.{ts.Milliseconds}";
                 Console.WriteLine(stringTs);
 
-                if (visionPredictResult.Result.IsSuccessStatusCode)
+                if (visionPredictResult.IsSuccessStatusCode)
                 {
-                    var responseBody = visionPredictResult.Result.Content.ReadAsStringAsync();
+                    var responseBody = visionPredictResult.Content.ReadAsStringAsync();
                     var resultBody = JObject.Parse(responseBody.Result.ToString());
                     var predictions = (JArray)resultBody["predictions"];
 
@@ -244,7 +256,8 @@ namespace CustomVisionObjDetectWpfApp
                 }
                 else
                 {
-                    string errorMessage = "** Web Call Error ** " + visionPredictResult.Result.ToString();
+                    string errorMessage = "** Web Call Error **  Status Code=" + visionPredictResult.StatusCode 
+                                        + " Reason=" + visionPredictResult.ReasonPhrase;
                     MessageBox.Show(errorMessage);
                 }
             }
@@ -299,8 +312,14 @@ namespace CustomVisionObjDetectWpfApp
 
             // If the mouse is not over a face rectangle.
             if (!mouseOverFace)
-                VisionDescriptionStatusBar.Text = "Place the mouse pointer over an object to see the object description.";
+                VisionDescriptionStatusBar.Text = " ** マウスポインターをオブジェクト上にポイントすると、詳細が表示されます";
 
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            settingWindow = new SettingWindow();
+            settingWindow.ShowDialog();
         }
     }
 

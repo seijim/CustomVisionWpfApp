@@ -3,7 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="700" Width="960">
     <Grid x:Name="BackPanel">
-        <Image x:Name="VisionPhoto" Stretch="Uniform" Margin="0,0,0,35" MouseMove="VisionPhoto_MouseMove" />
+        <Menu>
+            <MenuItem Header="ファイル(_F)">
+                <MenuItem Header="設定画面の表示(_V)" Click="MenuItem_Click" />
+                <MenuItem Header="オブジェクト自動検出(_E)" Click="BrowseButton_Click" />
+            </MenuItem>
+        </Menu>
+        <Image x:Name="VisionPhoto" Stretch="Uniform" Margin="0,20,0,35" MouseMove="VisionPhoto_MouseMove" />
         <DockPanel DockPanel.Dock="Bottom">
             <Label Name="Label1" Content="信頼確率 >=" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Left" />
             <TextBox Name="TextBoxProbability" Text="0.5" TextAlignment="Left" FontSize="18" Width="100" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Left" />
