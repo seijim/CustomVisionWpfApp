@@ -3,13 +3,14 @@ Azure Cognitive Services - Custom Vison Service (https://customvision.ai/) の O
 
 <img src="images/ap01.png" />
 
-Custom Vision Services で、オブジェクトを学習後、PERFORMANCE タブの Prediction URL をクリックして、そこに表示される情報を使い、MainWindow.xaml.cs の以下変数の値「xxxxx～xxxxx」を修正してください。
+バイナリのインストーラーは、<a href="installer.zip">こちら</a>をクリックしてください。
 
-        static readonly string predictionKeyValue = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-        static readonly string iterationId = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
-        static readonly string predictionUri =
-             "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/image?"
-            + $"iterationId={iterationId}";
 
-それ以外に修正の必要はありません。
-オブジェクトが異なれば、矩形とテキストの色が変わります。
+Custom Vision Services で、オブジェクトを学習後、PERFORMANCE タブの Prediction URL をクリックして、そこに表示される情報を使い、「ファイル」メニューの「設定画面の表示」で入力をしてください。
+
+<img src="images/ap02.png" />
+
+<img src="images/ap03.png" />
+
+
+オブジェクトが異なれば、矩形とテキストの色が変わります。オブジェクトをポイントすると、詳細が表示されます。
