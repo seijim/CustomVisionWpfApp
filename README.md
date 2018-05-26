@@ -3,7 +3,7 @@ Azure Cognitive Services - Custom Vison Service (https://customvision.ai/) の O
 <br><br>
 <img src="./images/ap01.png" />
 <br><br><br>
-Custom Vision Services で、オブジェクトを学習後、PERFORMANCE タブの Prediction URL をクリックして、そこに表示される情報を使い、設定画面の以下項目について入力してください。
+CustomVisionWpfApp を初めて起動すると、設定画面が表示されますので、Custom Vision Services で、オブジェクトを学習後、PERFORMANCE タブの Prediction URL をクリックして、そこに表示される情報を使い、設定画面の以下項目について入力し、「設定の保存」をクリックしてください。Custom Vision Services で、再学習を実行した場合、IterationId が新しく生成される為、「ファイル」メニューの「設定画面の表示」を選択し、再設定してください。
 <br><br>
 <img src="./images/ap03.png" />
 <br><br><br>
