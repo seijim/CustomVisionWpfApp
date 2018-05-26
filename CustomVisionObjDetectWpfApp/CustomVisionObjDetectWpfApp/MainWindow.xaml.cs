@@ -64,10 +64,7 @@ namespace CustomVisionObjDetectWpfApp
         public MainWindow()
         {
             InitializeComponent();
-        }
 
-        private async void BrowseButton_Click(object sender, RoutedEventArgs e)
-        {
             if ((string)Properties.Settings.Default["ApiEndpoint"] == string.Empty)
             {
                 settingWindow = new SettingWindow();
@@ -78,7 +75,10 @@ namespace CustomVisionObjDetectWpfApp
             predictionUri = predictionEndpoint + $"?iterationId={iterationId}";
             predictionKeyValue = (string)Properties.Settings.Default["ApiPredictionKey"];
             TextBoxProbability.Text = (string)Properties.Settings.Default["Probability"];
+        }
 
+        private async void BrowseButton_Click(object sender, RoutedEventArgs e)
+        {
             indexBrushes = 0;
             dicTagBrush = new Dictionary<string, Brush>();
 
