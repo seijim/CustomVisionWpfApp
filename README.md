@@ -3,9 +3,7 @@ Azure Cognitive Services - Custom Vison Service (https://customvision.ai/) の O
 <br><br>
 <img src="./images/ap01.png" />
 <br><br><br>
-Custom Vision Services で、オブジェクトを学習後、PERFORMANCE タブの Prediction URL をクリックして、そこに表示される情報を使い、「ファイル」メニューの「設定画面の表示」で設定画面を起動し、入力をしてください。
-<br><br>
-<img src="./images/ap02.png" />
+Custom Vision Services で、オブジェクトを学習後、PERFORMANCE タブの Prediction URL をクリックして、そこに表示される情報を使い、設定画面の以下項目について入力してください。
 <br><br>
 <img src="./images/ap03.png" />
 <br><br><br>
