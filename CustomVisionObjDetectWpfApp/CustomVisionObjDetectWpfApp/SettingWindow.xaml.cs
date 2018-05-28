@@ -34,15 +34,19 @@ namespace CustomVisionObjDetectWpfApp
 
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default["ApiEndpoint"] = TextBoxApiEndpoint.Text;
-            Properties.Settings.Default["ApiIterationId"] = TextBoxApiIterationId.Text;
-            Properties.Settings.Default["ApiPredictionKey"] = TextBoxApiPredictionKey.Text;
-            Properties.Settings.Default["Probability"] = TextBoxProbability.Text;
+            Properties.Settings.Default["ApiEndpoint"] = TextBoxApiEndpoint.Text.Trim();
+            Properties.Settings.Default["ApiIterationId"] = TextBoxApiIterationId.Text.Trim();
+            Properties.Settings.Default["ApiPredictionKey"] = TextBoxApiPredictionKey.Text.Trim();
+            Properties.Settings.Default["Probability"] = TextBoxProbability.Text.Trim();
 
             double d;
             if (double.TryParse(TextBoxProbability.Text, out d))
             {
                 Properties.Settings.Default.Save();
+
+                MainWindow.predictionEndpoint = (string)Properties.Settings.Default["ApiEndpoint"];
+                MainWindow.iterationId = (string)Properties.Settings.Default["ApiIterationId"];
+                MainWindow.predictionKeyValue = (string)Properties.Settings.Default["ApiPredictionKey"];
             }
             else
             {
