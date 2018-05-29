@@ -1,5 +1,11 @@
 # CustomVisionWpfApp - 誰でもできるディープ ラーニング
-Azure Cognitive Services - Custom Vison Service (https://customvision.ai/) の Object Detection 機能 (2018.05.25 時点で Limited Preview) を使った以下のような WPF アプリケーションを公開しています。バイナリのインストーラーは、<a href="./Installer.zip">こちら</a>からダウンロードしてください。Custom Vision Service - Object Detection の使い方が分からない方は、<a href="./CustomVisionObjectDetection.pdf">こちら</a>をご確認ください。
+Azure Cognitive Services - Custom Vison Service (https://customvision.ai/) の Object Detection 機能 (2018.05.25 時点で Limited Preview) を使うと、従来、TensorFlow や CNTK などのディープラーニング ツールキットを使ってモデル構築をしないとできなかったことが、GUI だけで誰でも実現できるようになりました。
+<br><br>
+Custom Vision Service - Object Detection 機能の使い方は、<a href="./CustomVisionObjectDetection.pdf">こちら</a>をご確認ください。
+<br><br>
+Custom Vison Service で作成した Web API を使って実現できる以下のような WPF アプリケーションを公開しています。
+<br>
+インストーラーは、<a href="./Installer.zip">こちら</a>からダウンロードしてください。
 <br><br>
 <img src="./images/ap01.png" />
 <br><br><br>
