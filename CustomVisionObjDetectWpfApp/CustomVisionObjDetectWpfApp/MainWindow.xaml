@@ -6,15 +6,15 @@
         <Menu>
             <MenuItem Header="ファイル(_F)">
                 <MenuItem Header="設定画面の表示(_V)" Click="MenuItem_Click" />
-                <MenuItem Header="オブジェクト自動検出(_E)" Click="BrowseButton_Click" />
+                <MenuItem Header="画像選択 ＆ オブジェクト自動検出(_E)" Click="BrowseButton_Click" />
             </MenuItem>
         </Menu>
         <Image x:Name="VisionPhoto" Stretch="Uniform" Margin="0,20,0,35" MouseMove="VisionPhoto_MouseMove" />
         <DockPanel DockPanel.Dock="Bottom">
             <Label Name="Label1" Content="信頼確率 >=" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Left" />
             <TextBox Name="TextBoxProbability" Text="0.5" TextAlignment="Left" FontSize="18" Width="100" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Left" />
-            <Button x:Name="BrowseButton" Width="150" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Left"
-                Content="オブジェクト自動検出" FontWeight="Bold" Foreground="White" Background="Blue"
+            <Button x:Name="BrowseButton" Width="200" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Left"
+                Content="画像選択 ＆ オブジェクト自動検出" FontWeight="Bold" Foreground="White" Background="Blue"
                 Click="BrowseButton_Click" />
             <StatusBar VerticalAlignment="Bottom" Height="30">
                 <StatusBarItem>

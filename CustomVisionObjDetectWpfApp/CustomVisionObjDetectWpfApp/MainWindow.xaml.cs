@@ -27,9 +27,9 @@ namespace CustomVisionObjDetectWpfApp
     public partial class MainWindow : Window
     {
         static readonly string predictionKeyName = "Prediction-Key";
-        static string predictionKeyValue;
-        static string predictionEndpoint;
-        static string iterationId;
+        public static string predictionKeyValue;
+        public static string predictionEndpoint;
+        public static string iterationId;
         static string predictionUri;
 
         SettingWindow settingWindow;
@@ -72,13 +72,13 @@ namespace CustomVisionObjDetectWpfApp
             }
             predictionEndpoint = (string)Properties.Settings.Default["ApiEndpoint"];
             iterationId = (string)Properties.Settings.Default["ApiIterationId"];
-            predictionUri = predictionEndpoint + $"?iterationId={iterationId}";
             predictionKeyValue = (string)Properties.Settings.Default["ApiPredictionKey"];
             TextBoxProbability.Text = (string)Properties.Settings.Default["Probability"];
         }
 
         private async void BrowseButton_Click(object sender, RoutedEventArgs e)
         {
+            predictionUri = predictionEndpoint + $"?iterationId={iterationId}";
             indexBrushes = 0;
             dicTagBrush = new Dictionary<string, Brush>();
 
@@ -113,8 +113,6 @@ namespace CustomVisionObjDetectWpfApp
             if (visionPredictions == null)
                 return;
 
-            Title = String.Format("** オブジェクトが検出されました ** {0} object(s) detected", visionPredictions.Count);
-
             if (visionPredictions.Count > 0)
             {
                 // Prepare to draw rectangles around the objects.
@@ -128,6 +126,7 @@ namespace CustomVisionObjDetectWpfApp
                 visionRectangles = new VisionRectangle[visionPredictions.Count];
                 visionDescriptions = new String[visionPredictions.Count];
 
+                int detectionCount = 0;
                 for (int i = 0; i < visionPredictions.Count; ++i)
                 {
                     var prediction = (JObject)visionPredictions[i];
@@ -144,7 +143,7 @@ namespace CustomVisionObjDetectWpfApp
                     // Store the object rectangle.
                     visionRectangles[i] = rectangle;
                     // Store the object description.
-                    visionDescriptions[i] = "Tag : " + tagName + " / Probability : " + probability.ToString();
+                    visionDescriptions[i] = "タグ : " + tagName + " / 信頼確率 : " + probability.ToString();
 
                     // Draw a rectangle on the object.
                     double threshold = 0;
@@ -192,6 +191,7 @@ namespace CustomVisionObjDetectWpfApp
                                 rectangle.Top * resizeFactor + 2
                             )
                         );
+                        ++detectionCount;
                     }
                     else
                     {
@@ -214,6 +214,10 @@ namespace CustomVisionObjDetectWpfApp
 
                 visionWithRectBitmap.Render(visual);
                 VisionPhoto.Source = visionWithRectBitmap;
+
+                string titleStatus = $"** オブジェクトが検出されました **  検出数= {visionPredictions.Count} 個の内、{detectionCount} 個を表示しています";
+                Title = titleStatus;
+                MessageBox.Show(titleStatus, "結果",MessageBoxButton.OK, MessageBoxImage.Information);
 
                 // Set the status bar text.
                 VisionDescriptionStatusBar.Text = " ** マウスポインターをオブジェクト上にポイントすると、詳細が表示されます";
