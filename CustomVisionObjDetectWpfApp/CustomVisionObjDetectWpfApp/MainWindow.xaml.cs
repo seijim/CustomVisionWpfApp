@@ -47,9 +47,9 @@ namespace CustomVisionObjDetectWpfApp
         VisionRectangle[] visionRectangles;
 
         static readonly Brush[] brushArray = {
-            Brushes.Yellow,
-            Brushes.Pink,
             Brushes.Orange,
+            Brushes.Pink,
+            Brushes.Yellow,
             Brushes.LightGreen,
             Brushes.LightCyan,
             Brushes.LightGoldenrodYellow,
@@ -107,11 +107,53 @@ namespace CustomVisionObjDetectWpfApp
 
             VisionPhoto.Source = bitmapSource;
 
+            // Change the scale of bitmap if necessary
+            var bitmapWidth = bitmapSource.Width;
+            var bitmapHeight = bitmapSource.Height;
+            bool wider = false;
+            double rank, scale = 0;
+            const double rank1 = 512;
+            const double rank2 = 1024;
+            const double rank3 = 1536;
+            const double rank4 = 2048;
+            const double rankThreshold = 1280;
+            if (bitmapWidth > bitmapHeight)
+            {
+                wider = true;
+                if (bitmapWidth >= rankThreshold)
+                    scale = rankThreshold / bitmapWidth;
+            }
+            else
+            {
+                wider = false;
+                if (bitmapHeight >= rankThreshold)
+                    scale = rankThreshold / bitmapHeight;
+            }
+            if (bitmapWidth >= rank4)
+                rank = rank4;
+            else if (bitmapWidth >= rank3)
+                rank = rank3;
+            else if (bitmapWidth >= rank2)
+                rank = rank2;
+            else
+                rank = rank1;
+
+            BitmapSource scaledBitmapSource;
+            if (scale == 0)
+                scaledBitmapSource = bitmapSource;
+            else
+                scaledBitmapSource = new TransformedBitmap(bitmapSource, new ScaleTransform(scale, scale));
+
             // Detect any faces in the image.
             Title = "オブジェクトの検出中.....";
-            visionPredictions = await UploadAndDetectObjects(filePath);
+            visionPredictions = await UploadAndDetectObjects(scaledBitmapSource);
             if (visionPredictions == null)
+            {
+                string titleStatus = $"** オブジェクトが検出できませんでした ** ";
+                Title = titleStatus;
+                MessageBox.Show(titleStatus, "結果", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
+            }
 
             if (visionPredictions.Count > 0)
             {
@@ -125,6 +167,16 @@ namespace CustomVisionObjDetectWpfApp
 
                 visionRectangles = new VisionRectangle[visionPredictions.Count];
                 visionDescriptions = new String[visionPredictions.Count];
+
+                int fontSize = 12;
+                if (rank == rank1)
+                    fontSize = 8;
+                else if (rank == rank2)
+                    fontSize = 18;
+                else if (rank == rank3)
+                    fontSize = 24;
+                else if (rank == rank4)
+                    fontSize = 36;
 
                 int detectionCount = 0;
                 for (int i = 0; i < visionPredictions.Count; ++i)
@@ -167,6 +219,7 @@ namespace CustomVisionObjDetectWpfApp
                             if (indexBrushes == brushArray.Length)
                                 indexBrushes = 0;
                         }
+                        // Draw a rectangle.
                         drawingContext.DrawRectangle(
                             Brushes.Transparent,
                             new Pen(dicTagBrush[tagName], 2),
@@ -177,13 +230,14 @@ namespace CustomVisionObjDetectWpfApp
                                 rectangle.Height * resizeFactor
                             )
                         );
+                        // Draw a text.
                         drawingContext.DrawText(
                             new FormattedText(
                                 tagName + $" ({(probability * 100).ToString().Substring(0, 5)}%)",
                                 CultureInfo.CurrentCulture,
                                 FlowDirection.LeftToRight, 
                                 new Typeface("Meiryo UI"),
-                                11,
+                                fontSize,
                                 dicTagBrush[tagName]
                             ),
                             new Point(
@@ -222,9 +276,15 @@ namespace CustomVisionObjDetectWpfApp
                 // Set the status bar text.
                 VisionDescriptionStatusBar.Text = " ** マウスポインターをオブジェクト上にポイントすると、詳細が表示されます";
             }
+            else
+            {
+                string titleStatus = $"** オブジェクトが検出できませんでした ** ";
+                Title = titleStatus;
+                MessageBox.Show(titleStatus, "結果", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
 
-        private async Task<JArray> UploadAndDetectObjects(string filePath)
+        private async Task<JArray> UploadAndDetectObjects(BitmapSource bitmapSource)
         {
             TimeSpan ts;
             string stringTs = string.Empty;
@@ -236,7 +296,12 @@ namespace CustomVisionObjDetectWpfApp
             try
             {
                 // Prepare target file data
-                byte[] buffer = File.ReadAllBytes(filePath);
+                JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+                MemoryStream memoryStream = new MemoryStream();
+                encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+                encoder.Save(memoryStream);
+                byte[] buffer = memoryStream.GetBuffer();
+                memoryStream.Dispose();
                 var content = new ByteArrayContent(buffer);
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
 
