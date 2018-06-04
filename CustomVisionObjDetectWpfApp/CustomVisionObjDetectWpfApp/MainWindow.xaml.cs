@@ -111,32 +111,21 @@ namespace CustomVisionObjDetectWpfApp
             var bitmapWidth = bitmapSource.Width;
             var bitmapHeight = bitmapSource.Height;
             bool wider = false;
-            double rank, scale = 0;
-            const double rank1 = 512;
-            const double rank2 = 1024;
-            const double rank3 = 1536;
-            const double rank4 = 2048;
-            const double rankThreshold = 1280;
+            double scale = 0;
+            const double standardSize = 1024;
+            const double sizeThreshold = 1280;
             if (bitmapWidth > bitmapHeight)
             {
                 wider = true;
-                if (bitmapWidth >= rankThreshold)
-                    scale = rankThreshold / bitmapWidth;
+                if (bitmapWidth >= sizeThreshold)
+                    scale = sizeThreshold / bitmapWidth;
             }
             else
             {
                 wider = false;
-                if (bitmapHeight >= rankThreshold)
-                    scale = rankThreshold / bitmapHeight;
+                if (bitmapHeight >= sizeThreshold)
+                    scale = sizeThreshold / bitmapHeight;
             }
-            if (bitmapWidth >= rank4)
-                rank = rank4;
-            else if (bitmapWidth >= rank3)
-                rank = rank3;
-            else if (bitmapWidth >= rank2)
-                rank = rank2;
-            else
-                rank = rank1;
 
             BitmapSource scaledBitmapSource;
             if (scale == 0)
@@ -168,15 +157,12 @@ namespace CustomVisionObjDetectWpfApp
                 visionRectangles = new VisionRectangle[visionPredictions.Count];
                 visionDescriptions = new String[visionPredictions.Count];
 
-                int fontSize = 12;
-                if (rank == rank1)
-                    fontSize = 8;
-                else if (rank == rank2)
-                    fontSize = 18;
-                else if (rank == rank3)
-                    fontSize = 24;
-                else if (rank == rank4)
-                    fontSize = 36;
+                int fontSize = 16;
+                int penSize = 3;
+                fontSize = (int)(fontSize * bitmapSource.Width / standardSize);
+                penSize = (int)(penSize * bitmapSource.Width / standardSize);
+                if (penSize < 1)
+                    penSize = 1;
 
                 int detectionCount = 0;
                 for (int i = 0; i < visionPredictions.Count; ++i)
@@ -222,7 +208,7 @@ namespace CustomVisionObjDetectWpfApp
                         // Draw a rectangle.
                         drawingContext.DrawRectangle(
                             Brushes.Transparent,
-                            new Pen(dicTagBrush[tagName], 2),
+                            new Pen(dicTagBrush[tagName], penSize),
                             new Rect(
                                 rectangle.Left * resizeFactor,
                                 rectangle.Top * resizeFactor,
