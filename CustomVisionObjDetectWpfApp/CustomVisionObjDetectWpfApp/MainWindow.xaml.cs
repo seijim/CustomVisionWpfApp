@@ -33,7 +33,7 @@ namespace CustomVisionObjDetectWpfApp
         static string predictionUri;
 
         SettingWindow settingWindow;
-        double resizeFactor;
+        //double resizeFactor;
         JArray visionPredictions;
         string[] visionDescriptions;
 
@@ -150,17 +150,17 @@ namespace CustomVisionObjDetectWpfApp
                 DrawingVisual visual = new DrawingVisual();
                 DrawingContext drawingContext = visual.RenderOpen();
                 drawingContext.DrawImage(bitmapSource,
-                    new Rect(0, 0, bitmapSource.Width, bitmapSource.Height));
+                    new Rect(0, 0, bitmapSource.PixelWidth, bitmapSource.PixelHeight));
                 double dpi = bitmapSource.DpiX;
-                resizeFactor = 96 / dpi;
+                //resizeFactor = 96 / dpi;
 
                 visionRectangles = new VisionRectangle[visionPredictions.Count];
                 visionDescriptions = new String[visionPredictions.Count];
 
                 int fontSize = 16;
                 int penSize = 3;
-                fontSize = (int)(fontSize * bitmapSource.Width / standardSize);
-                penSize = (int)(penSize * bitmapSource.Width / standardSize);
+                fontSize = (int)(fontSize * bitmapSource.PixelHeight / standardSize);
+                penSize = (int)(penSize * bitmapSource.PixelWidth / standardSize);
                 if (penSize < 1)
                     penSize = 1;
 
@@ -210,10 +210,10 @@ namespace CustomVisionObjDetectWpfApp
                             Brushes.Transparent,
                             new Pen(dicTagBrush[tagName], penSize),
                             new Rect(
-                                rectangle.Left * resizeFactor,
-                                rectangle.Top * resizeFactor,
-                                rectangle.Width * resizeFactor,
-                                rectangle.Height * resizeFactor
+                                rectangle.Left,
+                                rectangle.Top,
+                                rectangle.Width,
+                                rectangle.Height
                             )
                         );
                         // Draw a text.
@@ -227,8 +227,8 @@ namespace CustomVisionObjDetectWpfApp
                                 dicTagBrush[tagName]
                             ),
                             new Point(
-                                rectangle.Left * resizeFactor + 4,
-                                rectangle.Top * resizeFactor + 2
+                                rectangle.Left + 4,
+                                rectangle.Top + 2
                             )
                         );
                         ++detectionCount;
@@ -246,8 +246,8 @@ namespace CustomVisionObjDetectWpfApp
 
                 // Display the image with the rectangle around the face.
                 RenderTargetBitmap visionWithRectBitmap = new RenderTargetBitmap(
-                    (int)(bitmapSource.PixelWidth * resizeFactor),
-                    (int)(bitmapSource.PixelHeight * resizeFactor),
+                    (int)(bitmapSource.PixelWidth),
+                    (int)(bitmapSource.PixelHeight),
                     96,
                     96,
                     PixelFormats.Pbgra32);
@@ -340,7 +340,7 @@ namespace CustomVisionObjDetectWpfApp
             BitmapSource bitmapSource = (BitmapSource)imageSource;
 
             // Scale adjustment between the actual size and displayed size.
-            var scale = VisionPhoto.ActualWidth / (bitmapSource.PixelWidth / resizeFactor);
+            var scale = VisionPhoto.ActualWidth / bitmapSource.PixelWidth;
 
             // Check if this mouse position is over a face rectangle.
             bool mouseOverFace = false;
